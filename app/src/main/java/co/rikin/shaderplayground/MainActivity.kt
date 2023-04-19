@@ -46,8 +46,45 @@ half4 pointer(float2 fragCoord) {
     return half4(center.x, center.y, 0.0, 1.0);
 }
 
+float plot(float2 st) {
+    return smoothstep(-0.01, 0.0, abs(st.y - st.x)) - smoothstep(0.0, 0.01, abs(st.y - st.x));
+}
+
+float plot(float2 uv, float on) {
+    return smoothstep(on-0.02, on, uv.y) - smoothstep(on, on+0.02, uv.y);
+}
+
+half4 shapingLinear(float2 fragCoord) {
+    float2 st = fragCoord.xy/iResolution;
+    float3 color = float3(st.x);
+    // Plot a line
+    float pct = plot(st);
+    color = (1.0-pct)*color+pct*float3(0.0,1.0,0.0);
+
+	  return half4(color,1.0);
+}
+
+half4 shapingCurve(float2 fragCoord) {
+    float2 st = fragCoord.xy/iResolution;
+    float y = pow(st.x, 3.0);
+    float3 color = float3(y);
+    
+    float pct = plot(st, y);
+    color = (1.0-pct)*color+pct*float3(0.0,1.0,0.0);
+    
+    return half4(color, 1.0);
+}
+
+half4 learningSmoothStep(float2 fragCoord) {
+    float2 uv = fragCoord.xy / iResolution;
+    float3 color = float3(0.0);
+    float m = smoothstep(0.49, 0.51, uv.x);
+    color += m;
+    return half4(color, 1.0);
+}
+
 half4 main(float2 fragCoord) {
-    return gradient(fragCoord);
+    return shapingCurve(fragCoord);
 }
 """
 val shader = RuntimeShader(ShaderCode)
