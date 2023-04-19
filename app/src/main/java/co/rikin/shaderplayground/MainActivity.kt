@@ -4,7 +4,7 @@ import android.graphics.RuntimeShader
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.CacheDrawScope
 import androidx.compose.ui.draw.DrawResult
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import co.rikin.shaderplayground.ui.theme.ShaderPlaygroundTheme
@@ -31,8 +33,21 @@ const val ShaderCode = """
 uniform shader composable;
 uniform float2 iResolution;
 uniform float iTime;
+uniform float2 iPointer;
+
+half4 gradient(float2 fragCoord) {
+    float2 uv = fragCoord.xy / iResolution;
+    return half4(uv.x, uv.y, 0.0, 1.0);
+}
+
+half4 pointer(float2 fragCoord) {
+    float2 normPointer = iPointer / iResolution;
+    float2 center = normPointer;
+    return half4(center.x, center.y, 0.0, 1.0);
+}
+
 half4 main(float2 fragCoord) {
-    return half4(abs(sin(iTime)), 0.0, 0.0, 1.0);
+    return gradient(fragCoord);
 }
 """
 val shader = RuntimeShader(ShaderCode)
@@ -54,6 +69,22 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier
               .fillMaxWidth()
               .height(300.dp)
+              .pointerInput(Unit) {
+                forEachGesture {
+                  awaitPointerEventScope {
+                    do {
+                      val event = awaitPointerEvent()
+                      val x = event.changes.last().position.x
+                      val y = event.changes.last().position.y
+                      shader.setFloatUniform(
+                        "iPointer",
+                        x,
+                        y
+                      )
+                    } while (event.changes.none() { it.changedToUp() })
+                  }
+                }
+              }
           ) { time ->
             onDrawBehind {
               shader.setFloatUniform(
