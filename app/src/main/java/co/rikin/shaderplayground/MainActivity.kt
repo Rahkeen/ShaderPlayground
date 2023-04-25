@@ -73,8 +73,27 @@ half4 shapingPractice(float2 fragCoord) {
 	  return half4(color, 1.0);
 }
 
+float3 colorA = vec3(0.83529, 0.77647, 0.87843); // yellow ish
+float3 colorB = vec3(0.09804, 0.16471, 0.31765); // blue ish
+
+float random(float2 st) {
+    return fract(sin(dot(st.xy, float2(12.9898,78.233))) * 43758.5453123);
+}
+
+half4 colorPractice(float2 fragCoord) {
+    float2 uv = fragCoord.xy / iResolution;
+    float3 color = float3(0.0);
+    float noise = random(uv);
+    float noiseX = uv.x + noise * 0.4;
+    
+    float3 pct = float3(noiseX);
+    color = mix(colorA, colorB, pct);
+    
+    return half4(color, 1.0);
+}
+
 half4 main(float2 fragCoord) {
-    return shapingPractice(fragCoord);
+    return colorPractice(fragCoord);
 }
 """
 val shader = RuntimeShader(ShaderCode)
