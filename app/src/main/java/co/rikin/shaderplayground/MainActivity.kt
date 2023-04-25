@@ -47,44 +47,34 @@ half4 pointer(float2 fragCoord) {
 }
 
 float plot(float2 st) {
-    return smoothstep(-0.01, 0.0, abs(st.y - st.x)) - smoothstep(0.0, 0.01, abs(st.y - st.x));
+    return smoothstep(0.02, 0.0, abs(st.y - st.x));
 }
 
 float plot(float2 uv, float on) {
-    return smoothstep(on-0.02, on, uv.y) - smoothstep(on, on+0.02, uv.y);
+    return smoothstep(on-0.01, on, uv.y) - smoothstep(on, on+0.01, uv.y);
 }
 
-half4 shapingLinear(float2 fragCoord) {
-    float2 st = fragCoord.xy/iResolution;
-    float3 color = float3(st.x);
-    // Plot a line
-    float pct = plot(st);
-    color = (1.0-pct)*color+pct*float3(0.0,1.0,0.0);
-
-	  return half4(color,1.0);
-}
-
-half4 shapingCurve(float2 fragCoord) {
-    float2 st = fragCoord.xy/iResolution;
-    float y = pow(st.x, 3.0);
+half4 shapingPractice(float2 fragCoord) {
+    float pi = 3.1415926;
+    float2 uv = fragCoord.xy/iResolution;
+    //x -> (0, 1) to (-1, 1)
+    //y -> (0, 1) to (0, 1)
+    float slope = (1.0 - -1.0) / (1 - 0); // 2.0
+    uv.x = -1.0 + slope * uv.x;
+    uv.y = 1 - uv.y;
+    // function for plotting x on the y axis
+    float y = 1 - pow(abs(sin(pi * uv.x / 2.0)), 0.5); 
     float3 color = float3(y);
     
-    float pct = plot(st, y);
+    float pct = plot(uv, y);
+    // plot returns 1.0 when point is on the line, 0 otherwise, so it draws a green line
     color = (1.0-pct)*color+pct*float3(0.0,1.0,0.0);
-    
-    return half4(color, 1.0);
-}
 
-half4 learningSmoothStep(float2 fragCoord) {
-    float2 uv = fragCoord.xy / iResolution;
-    float3 color = float3(0.0);
-    float m = smoothstep(0.49, 0.51, uv.x);
-    color += m;
-    return half4(color, 1.0);
+	  return half4(color, 1.0);
 }
 
 half4 main(float2 fragCoord) {
-    return shapingCurve(fragCoord);
+    return shapingPractice(fragCoord);
 }
 """
 val shader = RuntimeShader(ShaderCode)
