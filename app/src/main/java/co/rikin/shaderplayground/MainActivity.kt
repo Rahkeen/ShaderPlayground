@@ -50,7 +50,7 @@ float plot(float2 uv, float on) {
     return smoothstep(on-0.01, on, uv.y) - smoothstep(on, on+0.01, uv.y);
 }
 
-$GrainyGradientShader
+$ExerciseOne
 
 half4 main(float2 fragCoord) {
     return color(fragCoord);
