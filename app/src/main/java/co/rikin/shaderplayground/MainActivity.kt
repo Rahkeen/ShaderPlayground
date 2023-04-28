@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +32,7 @@ import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import co.rikin.shaderplayground.ui.theme.DarkBlue
 import co.rikin.shaderplayground.ui.theme.ShaderPlaygroundTheme
 
 const val ShaderCode = """
@@ -34,17 +40,7 @@ uniform shader composable;
 uniform float2 iResolution;
 uniform float iTime;
 uniform float2 iPointer;
-
-half4 gradient(float2 fragCoord) {
-    float2 uv = fragCoord.xy / iResolution;
-    return half4(uv.x, uv.y, 0.0, 1.0);
-}
-
-half4 pointer(float2 fragCoord) {
-    float2 normPointer = iPointer / iResolution;
-    float2 center = normPointer;
-    return half4(center.x, center.y, 0.0, 1.0);
-}
+uniform float chaos;
 
 float plot(float2 st) {
     return smoothstep(0.02, 0.0, abs(st.y - st.x));
@@ -54,39 +50,21 @@ float plot(float2 uv, float on) {
     return smoothstep(on-0.01, on, uv.y) - smoothstep(on, on+0.01, uv.y);
 }
 
-half4 shapingPractice(float2 fragCoord) {
-    float pi = 3.1415926;
-    float2 uv = fragCoord.xy/iResolution;
-    //x -> (0, 1) to (-1, 1)
-    //y -> (0, 1) to (0, 1)
-    float slope = (1.0 - -1.0) / (1 - 0); // 2.0
-    uv.x = -1.0 + slope * uv.x;
-    uv.y = 1 - uv.y;
-    // function for plotting x on the y axis
-    float y = 1 - pow(abs(sin(pi * uv.x / 2.0)), 0.5); 
-    float3 color = float3(y);
-    
-    float pct = plot(uv, y);
-    // plot returns 1.0 when point is on the line, 0 otherwise, so it draws a green line
-    color = (1.0-pct)*color+pct*float3(0.0,1.0,0.0);
-
-	  return half4(color, 1.0);
-}
-
 float3 colorA = vec3(0.83529, 0.77647, 0.87843); // yellow ish
 float3 colorB = vec3(0.09804, 0.16471, 0.31765); // blue ish
+float pi = 3.1415926;
 
 float random(float2 st) {
-    return fract(sin(dot(st.xy, float2(12.9898,78.233))) * 43758.5453123);
+    return fract(sin(dot(st.xy, float2(1.9898,78.233))) * 43758.5453123);
 }
 
 half4 colorPractice(float2 fragCoord) {
     float2 uv = fragCoord.xy / iResolution;
     float3 color = float3(0.0);
     float noise = random(uv);
-    float noiseX = uv.x + noise * 0.4;
+    float noiseX = uv.x + noise * chaos;
     
-    float3 pct = float3(noiseX);
+    float3 pct = float3(pow(noiseX, 2.0));
     color = mix(colorA, colorB, pct);
     
     return half4(color, 1.0);
@@ -111,6 +89,7 @@ class MainActivity : ComponentActivity() {
           verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
+          var chaos by remember { mutableStateOf(0.0f) }
           SimpleSketchWithCache(
             modifier = Modifier
               .fillMaxWidth()
@@ -142,6 +121,10 @@ class MainActivity : ComponentActivity() {
                 "iTime",
                 time.value
               )
+              shader.setFloatUniform(
+                "chaos",
+                chaos
+              )
               drawRect(
                 brush = ShaderBrush(
                   shader = shader,
@@ -149,6 +132,16 @@ class MainActivity : ComponentActivity() {
               )
             }
           }
+          Slider(
+            modifier = Modifier.padding(16.dp),
+            colors = SliderDefaults.colors(
+              thumbColor = DarkBlue,
+              activeTrackColor = DarkBlue,
+              inactiveTrackColor = DarkBlue.copy(alpha = 0.3f),
+            ),
+            value = chaos,
+            onValueChange = { chaos = it }
+          )
         }
       }
     }
