@@ -43,7 +43,7 @@ uniform float2 iPointer;
 uniform float chaos;
 
 // Replace with Color Exercise Code
-$GradientExerciseSunrise
+$HSBExerciseOne
 
 half4 main(float2 fragCoord) {
     return color(fragCoord);
@@ -97,8 +97,8 @@ class MainActivity : ComponentActivity() {
                 time.value
               )
               shader.setFloatUniform(
-                "chaos",
-                chaos
+                "mangle",
+                chaos % 1f
               )
               drawRect(
                 brush = ShaderBrush(
@@ -109,6 +109,7 @@ class MainActivity : ComponentActivity() {
           }
           Slider(
             modifier = Modifier.padding(16.dp),
+            valueRange = 0f..2f,
             colors = SliderDefaults.colors(
               thumbColor = DarkBlue,
               activeTrackColor = DarkBlue,
