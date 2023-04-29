@@ -42,15 +42,8 @@ uniform float iTime;
 uniform float2 iPointer;
 uniform float chaos;
 
-float plot(float2 st) {
-    return smoothstep(0.02, 0.0, abs(st.y - st.x));
-}
-
-float plot(float2 uv, float on) {
-    return smoothstep(on-0.01, on, uv.y) - smoothstep(on, on+0.01, uv.y);
-}
-
-$ExerciseOne
+// Replace with Color Exercise Code
+$GradientExerciseSunrise
 
 half4 main(float2 fragCoord) {
     return color(fragCoord);

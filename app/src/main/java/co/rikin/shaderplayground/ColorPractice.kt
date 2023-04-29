@@ -6,14 +6,16 @@ const val Core = """
 float3 colorA = vec3(0.83529, 0.77647, 0.87843); // lavender
 float3 colorB = vec3(0.09804, 0.16471, 0.31765); // dark blue
 float pi = 3.1415926;
+
+float plot (vec2 st, float pct){
+  return smoothstep( pct-0.01, pct, st.y) - smoothstep( pct, pct+0.01, st.y);
+}
 """
 
 const val ExerciseOne = """
   // imports
   $Core
  
-  // code
-  
   // transition functions
   float linear(float t) {
     return t;
@@ -25,14 +27,6 @@ const val ExerciseOne = """
   
   float exponentialIn(float t) {
     return t == 0.0 ? t : pow(2.0, 10.0 * (t - 1.0));
-  }
-  
-  float backIn(float t) {
-    return pow(t, 3.0) - t * sin(t * pi);
-  }
-  
-  float circularIn(float t) {
-    return 1.0 - sqrt(1.0 - t * t);
   }
   
   float bounceOut(float t) {
@@ -74,6 +68,79 @@ const val ExerciseOne = """
   }
 """
 
+const val ExerciseTwo = """
+  $Core
+  
+  half4 color(float2 fragCoord)  {
+    float2 uv = fragCoord.xy / iResolution;
+    float3 color = float3(0.0);
+    float pct = uv.x;
+    color = mix(colorA, colorB, pct);
+    return half4(color, 1.0);
+  }
+"""
+
+const val GradientExerciseOne = """
+  
+  $Core
+  
+  half4 color(float2 fragCoord)  {
+    float2 uv = fragCoord.xy / iResolution;
+    float3 color = float3(0.0);
+    
+    float3 pct = float3(uv.x);
+    
+//    pct.r = smoothstep(0.0, 1.0, uv.x);
+//    pct.g = sin(uv.x * pi);
+//    pct.b = pow(uv.x, 0.5);
+    
+    color = mix(colorA, colorB, pct);
+    
+    // plot the color channel lines
+    color = mix(color, vec3(1.0, 0.0, 0.0), plot(uv, pct.r));
+    color = mix(color, vec3(0.0, 1.0, 0.0), plot(uv, pct.g));
+    color = mix(color, vec3(0.0, 0.0, 1.0), plot(uv, pct.b));
+    
+    return half4(color, 1.0);
+  }
+"""
+const val GradientExerciseSunrise = """
+$Core
+
+float3 riseStart = float3(1.0, 0.6863, 0.8);
+float3 riseEnd = float3(1.0, 0.3294, 0.0);
+
+float3 setStart = float3(0.0, 0.2078, 0.4);
+float3 setEnd = float3(0.0, 0.1137, 0.2392);
+
+half4 color(float2 fragCoord)  {
+  float2 uv = fragCoord.xy / iResolution;
+  float3 color = float3(0.0);
+  float3 color2 = float3(0.0);
+  float3 color3 = float3(0.0);
+  
+  float3 pct = float3(uv.y);
+  
+    pct.r = pow(uv.y, 2.0);
+    pct.g = pow(uv.y, 1.5);
+    pct.b = pow(uv.y, 3.0);
+//    pct.g = sin(uv.x * pi);
+//    pct.b = pow(uv.x, 0.5);
+  
+  color = mix(riseStart, riseEnd, pct);
+  color2 = mix(setStart, setEnd, pct);
+  color3 = mix(color, color2, (sin(iTime) + 1) / 2.0);
+
+  
+  // plot the color channel lines
+//  color = mix(color, vec3(1.0, 0.0, 0.0), plot(uv, pct.r));
+//  color = mix(color, vec3(0.0, 1.0, 0.0), plot(uv, pct.g));
+//  color = mix(color, vec3(0.0, 0.0, 1.0), plot(uv, pct.b));
+  
+  return half4(color3, 1.0);
+}
+"""
+
 const val GrainyGradientShader = """
 float3 colorA = vec3(0.83529, 0.77647, 0.87843); // lavender
 float3 colorB = vec3(0.09804, 0.16471, 0.31765); // dark blue
@@ -96,5 +163,10 @@ half4 color(float2 fragCoord) {
 }
 """
 
+// This just activates the syntax highlighting
+private val z = RuntimeShader(Core)
 private val a = RuntimeShader(GrainyGradientShader)
 private val b = RuntimeShader(ExerciseOne)
+private val c = RuntimeShader(ExerciseTwo)
+private val d = RuntimeShader(GradientExerciseOne)
+private val e = RuntimeShader(GradientExerciseSunrise)
