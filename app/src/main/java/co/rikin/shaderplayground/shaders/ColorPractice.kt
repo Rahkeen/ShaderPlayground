@@ -1,16 +1,16 @@
-package co.rikin.shaderplayground
+package co.rikin.shaderplayground.shaders
 
 import android.graphics.RuntimeShader
 
 const val Core = """
-float3 colorA = vec3(0.83529, 0.77647, 0.87843); // lavender
-float3 colorB = vec3(0.09804, 0.16471, 0.31765); // dark blue
-float pi = 3.1415926536;
-float twopi = 6.28318530718;
+  float3 colorA = vec3(0.83529, 0.77647, 0.87843); // lavender
+  float3 colorB = vec3(0.09804, 0.16471, 0.31765); // dark blue
+  float pi = 3.1415926536;
+  float twopi = 6.28318530718;
 
-float plot (vec2 st, float pct){
-  return smoothstep( pct-0.01, pct, st.y) - smoothstep( pct, pct+0.01, st.y);
-}
+  float plot (vec2 st, float pct){
+    return smoothstep( pct-0.1, pct, st.y) - smoothstep( pct, pct+0.1, st.y);
+  }
 """
 
 const val ExerciseOne = """
@@ -142,6 +142,24 @@ half4 color(float2 fragCoord)  {
 }
 """
 
+const val ColorExerciseRainbow = """
+$Core
+
+half4 color(float2 fragCoord)  {
+//  float2 uv = fragCoord.xy / iResolution;
+//  float3 color = float3(0.0);
+//  
+//  float3 pct = float3(uv.y);
+
+  // plot the color channel lines
+//  color = mix(color, vec3(1.0, 0.0, 0.0), plot(uv, pct.r));
+//  color = mix(color, vec3(0.0, 1.0, 0.0), plot(uv, pct.g));
+//  color = mix(color, vec3(0.0, 0.0, 1.0), plot(uv, pct.b));
+  
+  return half4(color, 1.0);
+}
+"""
+
 const val HSBExerciseOne = """
 $Core
 
@@ -217,3 +235,4 @@ private val c = RuntimeShader(ExerciseTwo)
 private val d = RuntimeShader(GradientExerciseOne)
 private val e = RuntimeShader(GradientExerciseSunrise)
 private val f = RuntimeShader(HSBExerciseOne)
+private val g = RuntimeShader(ColorExerciseRainbow)

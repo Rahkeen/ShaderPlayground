@@ -32,6 +32,8 @@ import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import co.rikin.shaderplayground.shaders.ColorExerciseRainbow
+import co.rikin.shaderplayground.shaders.RainbowShader
 import co.rikin.shaderplayground.ui.theme.DarkBlue
 import co.rikin.shaderplayground.ui.theme.ShaderPlaygroundTheme
 
@@ -43,7 +45,7 @@ uniform float2 iPointer;
 uniform float chaos;
 
 // Replace with Color Exercise Code
-$HSBExerciseOne
+$RainbowShader
 
 half4 main(float2 fragCoord) {
     return color(fragCoord);
@@ -97,8 +99,8 @@ class MainActivity : ComponentActivity() {
                 time.value
               )
               shader.setFloatUniform(
-                "mangle",
-                chaos % 1f
+                "chaos",
+                chaos
               )
               drawRect(
                 brush = ShaderBrush(
@@ -109,7 +111,6 @@ class MainActivity : ComponentActivity() {
           }
           Slider(
             modifier = Modifier.padding(16.dp),
-            valueRange = 0f..2f,
             colors = SliderDefaults.colors(
               thumbColor = DarkBlue,
               activeTrackColor = DarkBlue,
