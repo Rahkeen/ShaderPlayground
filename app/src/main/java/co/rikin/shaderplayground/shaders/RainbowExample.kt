@@ -17,13 +17,13 @@ const val RainbowShader = """
     
     float redArc = 1 - sin(pi * uv.x);
     float redOn = plot(uv, redArc);
-    float orangeArc = 1.05 - sin(pi * uv.x);
+    float orangeArc = 1.01 - sin(pi * uv.x);
     float orangeOn = plot(uv, orangeArc);
-    float greenArc = 1.10 - sin(pi * uv.x);
+    float greenArc = 1.02 - sin(pi * uv.x);
     float greenOn = plot(uv, greenArc);
-    float blueArc = 1.15 - sin(pi * uv.x);
+    float blueArc = 1.03 - sin(pi * uv.x);
     float blueOn = plot(uv, blueArc);
-    float purpleArc = 1.20 - sin(pi * uv.x);
+    float purpleArc = 1.04 - sin(pi * uv.x);
     float purpleOn = plot(uv, purpleArc);
     
     color = mix(color, red, redOn);

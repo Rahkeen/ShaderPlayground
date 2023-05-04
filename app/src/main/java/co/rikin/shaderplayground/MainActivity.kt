@@ -33,6 +33,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import co.rikin.shaderplayground.shaders.ColorExerciseRainbow
+import co.rikin.shaderplayground.shaders.FlagShader
 import co.rikin.shaderplayground.shaders.RainbowShader
 import co.rikin.shaderplayground.ui.theme.DarkBlue
 import co.rikin.shaderplayground.ui.theme.ShaderPlaygroundTheme
@@ -45,7 +46,7 @@ uniform float2 iPointer;
 uniform float chaos;
 
 // Replace with Color Exercise Code
-$RainbowShader
+$FlagShader
 
 half4 main(float2 fragCoord) {
     return color(fragCoord);

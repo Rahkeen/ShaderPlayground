@@ -5,11 +5,18 @@ import android.graphics.RuntimeShader
 const val Core = """
   float3 colorA = vec3(0.83529, 0.77647, 0.87843); // lavender
   float3 colorB = vec3(0.09804, 0.16471, 0.31765); // dark blue
+  
+  float3 red = float3(1.0, .349, .369);
+  float3 orange = float3(1.0, .792, .227);
+  float3 green = float3(0.541, 0.788, .149);
+  float3 blue = float3(0.098, 0.510, 0.769);
+  float3 purple = float3(0.416, 0.298, 0.576);
+  
   float pi = 3.1415926536;
   float twopi = 6.28318530718;
 
   float plot (vec2 st, float pct){
-    return smoothstep( pct-0.1, pct, st.y) - smoothstep( pct, pct+0.1, st.y);
+    return smoothstep( pct-0.01, pct, st.y) - smoothstep( pct, pct+0.01, st.y);
   }
 """
 
