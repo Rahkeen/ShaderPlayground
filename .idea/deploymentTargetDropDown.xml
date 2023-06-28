@@ -2,13 +2,19 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="GlowingButton">
+      <entry key="GradientPlayground">
         <State />
       </entry>
-      <entry key="GlowingButton2">
+      <entry key="MagnifyingPlayground">
         <State />
       </entry>
-      <entry key="ShapesPlayground">
+      <entry key="PixellateShaderPlayground">
+        <State />
+      </entry>
+      <entry key="SnowyButton">
+        <State />
+      </entry>
+      <entry key="SwedenSnowPlayground">
         <State />
       </entry>
       <entry key="app">

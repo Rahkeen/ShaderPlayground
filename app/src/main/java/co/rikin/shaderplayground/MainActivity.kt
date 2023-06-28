@@ -1,20 +1,16 @@
 package co.rikin.shaderplayground
 
-import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.forEachGesture
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
@@ -30,16 +26,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.CacheDrawScope
 import androidx.compose.ui.draw.DrawResult
 import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.asComposeRenderEffect
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import co.rikin.shaderplayground.shaders.Core
+import co.rikin.shaderplayground.shaders.GradientPlayground
+import co.rikin.shaderplayground.shaders.MagnifyingPlayground
+import co.rikin.shaderplayground.shaders.PixellateShaderPlayground
 import co.rikin.shaderplayground.ui.theme.DarkBlue
 import co.rikin.shaderplayground.ui.theme.ShaderPlaygroundTheme
 
@@ -74,59 +70,7 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       ShaderPlaygroundTheme {
-        Column(
-          modifier = Modifier.fillMaxSize(),
-          verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-          horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-          var displacement by remember { mutableStateOf(0f) }
-          var time by remember { mutableStateOf(0f) }
-
-          LaunchedEffect(Unit) {
-            do {
-              withFrameMillis {
-                time += 0.01f
-              }
-            } while (true)
-          }
-
-          Image(
-            modifier = Modifier
-              .width(300.dp)
-              .onSizeChanged {
-                shader.setFloatUniform("iResolution", it.width.toFloat(), it.height.toFloat())
-              }
-              .graphicsLayer {
-                clip = true
-                with(shader) {
-                  setFloatUniform(
-                    "iTime",
-                    time
-                  )
-                  setFloatUniform(
-                    "displacement",
-                    displacement
-                  )
-                }
-                renderEffect = RenderEffect
-                  .createRuntimeShaderEffect(shader, "composable")
-                  .asComposeRenderEffect()
-              },
-            painter = painterResource(id = R.drawable.sora),
-            contentDescription = "My Dog",
-          )
-          Slider(
-            modifier = Modifier.padding(16.dp),
-            valueRange = 0f..50f,
-            colors = SliderDefaults.colors(
-              thumbColor = DarkBlue,
-              activeTrackColor = DarkBlue,
-              inactiveTrackColor = DarkBlue.copy(alpha = 0.3f),
-            ),
-            value = displacement,
-            onValueChange = { displacement = it }
-          )
-        }
+        PixellateShaderPlayground()
       }
     }
   }
@@ -151,7 +95,7 @@ fun Playground() {
                 x,
                 y
               )
-            } while (event.changes.none() { it.changedToUp() })
+            } while (event.changes.none { it.changedToUp() })
           }
         }
       }

@@ -30,4 +30,8 @@ val SaberGradient = Brush.radialGradient(
   )
 )
 
+val Darkness = Color(0xFF403d39)
+val Lightness = Color(0xFFccc5b9)
+val Dawn = Color(0xFFeb5e28)
+
 
