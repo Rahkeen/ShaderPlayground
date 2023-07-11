@@ -36,16 +36,16 @@ import org.intellij.lang.annotations.Language
 
 @Language("AGSL")
 val Util = """
-    float pi = 3.1415926536;
-    float twopi = 6.28318530718;
-    
-    float random(float2 st) {
-        return fract(sin(dot(st.xy, float2(12.9898,78.233))) * 43758.5453123);
-    }
+float pi = 3.1415926536;
+float twopi = 6.28318530718;
 
-    float plot (vec2 st, float pct){
-      return smoothstep( pct-0.01, pct, st.y) - smoothstep( pct, pct+0.01, st.y);
-    }
+float random(float2 st) {
+    return fract(sin(dot(st.xy, float2(12.9898,78.233))) * 43758.5453123);
+}
+
+float plot (vec2 st, float pct){
+    return smoothstep( pct-0.01, pct, st.y) - smoothstep( pct, pct+0.01, st.y);
+}
 """.trimIndent()
 
 @Language("AGSL")
